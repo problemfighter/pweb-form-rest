@@ -149,6 +149,14 @@ class PWebCRUD:
             raise form_rest_exception.error_message_exception(message)
         return None
 
+    def get_first(self, model: PWebBaseModel, query, is_deleted: bool = False, exception: bool = False, message: str = "Entry Not Found!"):
+        result = query.filter(and_(model.isDeleted == is_deleted)).first()
+        if result:
+            return result
+        if not result and exception:
+            raise form_rest_exception.error_message_exception(message)
+        return None
+
     def get_by_ids(self, model: PWebBaseModel, ids, is_deleted: bool = False, exception: bool = False, message: str = "Not Found!", query=None):
         if not query:
             query = model.query

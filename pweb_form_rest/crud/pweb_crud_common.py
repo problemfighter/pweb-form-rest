@@ -35,6 +35,9 @@ class PWebCRUDCommon:
     def get_by_id(self, model_id, exception=True, message: str = "Entry Not Found!", query=None):
         return self.pweb_crud.get_by_id(self.model, id=model_id, exception=exception, message=message, query=query)
 
+    def get_first(self, query, exception=True, message: str = "Entry Not Found!"):
+        return self.pweb_crud.get_first(self.model, query=query, exception=exception, message=message)
+
     def read_all(self, query=None, search_fields: list = None, sort_field=None, sort_order=None, item_per_page=None, enable_pagination=True):
         return self.pweb_crud.list(model=self.model, query=query, search_fields=search_fields, sort_field=sort_field, sort_order=sort_order, item_per_page=item_per_page, enable_pagination=enable_pagination)
 
