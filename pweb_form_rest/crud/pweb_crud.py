@@ -37,7 +37,7 @@ class PWebCRUD:
         except ValidationError as error:
             raise form_rest_exception.process_validation_exception(errors=error.messages, message=PWebFRConfig.VALIDATION_ERROR)
 
-    def get_json_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False, json_obj=None):
+    def get_json_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False, json_obj=None, before_validate=None, after_validate=None):
         if not json_obj:
             json_obj = self.request_data.json_data()
         else:
@@ -47,23 +47,34 @@ class PWebCRUD:
             raise form_rest_exception.error_message_exception(message=PWebFRConfig.INVALID_REQUEST_DATA, code=PWebResponseCode.error)
         json_obj = json_obj["data"]
 
+        if before_validate and callable(before_validate):
+            before_validate(json_obj)
+
         if is_validate:
             self.validate_data(json_obj, data_dto)
+            if after_validate and callable(after_validate):
+                after_validate(json_obj)
 
         if load_only:
             return self.load_allowed_data_from_dict(json_obj, data_dto)
 
         return json_obj
 
-    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, is_populate_model=False, load_only=False, form_data=None):
+    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, is_populate_model=False, load_only=False, form_data=None, before_validate=None, after_validate=None):
         if not form_data:
             form_data = self.request_data.form_and_file_data()
 
         if not form_data:
             raise form_rest_exception.error_message_exception(message=PWebFRConfig.INVALID_REQUEST_DATA, code=PWebResponseCode.error)
 
+        if before_validate and callable(before_validate):
+            before_validate(form_data)
+
         if is_validate:
             data = self.validate_data(form_data, data_dto)
+
+            if after_validate and callable(after_validate):
+                after_validate(form_data)
 
             if is_populate_model:
                 return self.load_model_from_dict(data, data_dto)

@@ -23,11 +23,11 @@ class PWebCRUDCommon:
     def load_rest_model_from_dict(self, data: dict, data_dto: PWebDataDTO, instance=None):
         return self.pweb_crud.populate_model(data=data, data_dto=data_dto, instance=instance)
 
-    def get_json_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False):
-        return self.pweb_crud.get_json_data(data_dto=data_dto, is_validate=is_validate, load_only=load_only)
+    def get_json_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False, before_validate=None, after_validate=None):
+        return self.pweb_crud.get_json_data(data_dto=data_dto, is_validate=is_validate, load_only=load_only, before_validate=before_validate, after_validate=after_validate)
 
-    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False, is_populate_model=False):
-        return self.pweb_crud.get_form_data(data_dto=data_dto, is_validate=is_validate, is_populate_model=is_populate_model, load_only=load_only)
+    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, load_only=False, is_populate_model=False, before_validate=None, after_validate=None):
+        return self.pweb_crud.get_form_data(data_dto=data_dto, is_validate=is_validate, is_populate_model=is_populate_model, load_only=load_only, before_validate=before_validate, after_validate=after_validate)
 
     def check_unique(self, field: str, value, model_id=None, exception: bool = True, message: str = "Already used", query=None):
         self.pweb_crud.check_unique(self.model, field=field, value=value, exception=exception, message=message, query=query, model_id=model_id)
