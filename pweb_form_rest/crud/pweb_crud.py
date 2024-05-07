@@ -111,6 +111,18 @@ class PWebCRUD:
         per_page: int = self.request_data.get_query_args_value(PWebFRConfig.ITEM_PER_PAGE_PARAM_NAME, default=item_per_page, type=int)
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
+    def set_custom_search_field(self, search_fields: list, query, search_text: str = None):
+        like = []
+        search = search_text
+        if not search:
+            search = self.request_data.get_query_args_value(PWebFRConfig.SEARCH_FIELD_PARAM_NAME)
+        if search:
+            for field in search_fields:
+                like.append(field.ilike("%{}%".format(search)))
+            if like:
+                return query.filter(or_(*like))
+        return query
+
     def set_search(self, model, search_fields: list, query, search_text: str = None):
         like = []
         search = search_text
