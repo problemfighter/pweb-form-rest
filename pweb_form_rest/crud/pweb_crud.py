@@ -128,7 +128,9 @@ class PWebCRUD:
              ):
         if not query:
             query = model.query
-        query = query.filter(getattr(model, "isDeleted") == is_deleted)
+
+        if hasattr(model, "isDeleted"):
+            query = query.filter(getattr(model, "isDeleted") == is_deleted)
 
         if not sort_field:
             sort_field = PWebFRConfig.SORT_DEFAULT_FIELD_NAME
