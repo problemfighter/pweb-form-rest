@@ -109,6 +109,14 @@ class ResponseMaker:
         data_response.add_data(model, response_dto, True)
         return self.http_response.json_string_response(data_response.to_dict(), http_code, self.headers)
 
+    def paginate_object_response(self, pageable_model: PWebBaseModel, data: list, status: str = PWebResponseStatus.success, code: str = PWebResponseCode.success, http_code=200, message=None):
+        data_response = self._get_paginate_response_object(model=pageable_model)
+        data_response.data = data
+        data_response.status = status
+        data_response.code = code
+        data_response.message = message
+        return self.http_response.json_string_response(data_response.to_dict(), http_code, self.headers)
+
     def dictionary_object_response(self, data: dict, status: str = PWebResponseStatus.success, code: str = PWebResponseCode.success, http_code=200, message=None):
         data_response = PWebDataResponse()
         data_response.status = status
