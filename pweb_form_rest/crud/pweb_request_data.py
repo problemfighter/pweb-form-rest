@@ -109,6 +109,12 @@ class RequestData:
             url_dictionary.baseURL = str(request.host_url).strip("/")
         return url_dictionary
 
+    def get_host_name(self):
+        url_details = urlparse(request.host_url)
+        if url_details and url_details.hostname:
+            return url_details.hostname
+        return None
+
     def parse_query_params(self, url):
         parsed = urlparse(url)
         params = dict(parse_qsl(parsed.query))
