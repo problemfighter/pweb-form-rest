@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from pweb.system12.pweb_saas_registry import PWebSaaSRegistry
 from pweb_form_rest.common.pweb_fr_config import PWebFRConfig
 from pweb_form_rest.swagger.pweb_sd_processor import PWebSDProcessor
 from pweb_form_rest.swagger.pweb_swagger_generator import PWebSwaggerGenerator
@@ -43,7 +44,9 @@ class PWebSwaggerUI:
     def check_auth(self):
         if PWebFRConfig.ENABLE_SWAGGER_AUTH:
             auth = request.authorization
-            if not (auth and auth.username == PWebFRConfig.SWAGGER_AUTH_USERNAME and auth.password == PWebFRConfig.SWAGGER_AUTH_PASSWORD):
+            username = PWebSaaSRegistry.get_saas_config(config_key="SWAGGER_AUTH_USERNAME", default=PWebFRConfig.SWAGGER_AUTH_USERNAME)
+            password = PWebSaaSRegistry.get_saas_config(config_key="SWAGGER_AUTH_PASSWORD", default=PWebFRConfig.SWAGGER_AUTH_PASSWORD)
+            if not (auth and auth.username == username and auth.password == password):
                 return ('You are not authorize to access the URL.', 401, {
                     'WWW-Authenticate': 'Basic realm="Login Required"'
                 })
