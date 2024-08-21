@@ -22,7 +22,15 @@ class PWebCRUD:
         except ValidationError as error:
             raise form_rest_exception.process_validation_exception(errors=error.messages, message=PWebFRConfig.VALIDATION_ERROR)
 
-    def load_model_from_dict(self, data: dict, data_dto: PWebDataDTO, session=sessions, instance=None):
+    def load_model_from_dict(self, data: dict, data_dto: PWebDataDTO, session=sessions, instance=None, ignore_load: list = None):
+        if ignore_load and isinstance(ignore_load, list):
+            load_fields = copy(data_dto.load_fields)
+            for ignore_field in ignore_load:
+                if ignore_field in data_dto.load_fields:
+                    del data_dto.load_fields[ignore_field]
+            loaded_model = data_dto.load(data, session=session, instance=instance, unknown=EXCLUDE)
+            data_dto.load_fields = load_fields
+            return loaded_model
         return data_dto.load(data, session=session, instance=instance, unknown=EXCLUDE)
 
     def load_allowed_data_from_dict(self, data: dict, data_dto: PWebDataDTO, instance=None):
@@ -31,9 +39,9 @@ class PWebCRUD:
             setattr(modified_data_dto, "_load_instance", False)
         return modified_data_dto.load(data, instance=instance, unknown=EXCLUDE)
 
-    def populate_model(self, data: dict, data_dto: PWebDataDTO, session=sessions, instance=None):
+    def populate_model(self, data: dict, data_dto: PWebDataDTO, session=sessions, instance=None, ignore_load: list = None):
         try:
-            return self.load_model_from_dict(data, data_dto, session, instance)
+            return self.load_model_from_dict(data, data_dto, session, instance, ignore_load=ignore_load)
         except ValidationError as error:
             raise form_rest_exception.process_validation_exception(errors=error.messages, message=PWebFRConfig.VALIDATION_ERROR)
 
@@ -60,7 +68,7 @@ class PWebCRUD:
 
         return json_obj
 
-    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, is_populate_model=False, load_only=False, form_data=None, before_validate=None, after_validate=None):
+    def get_form_data(self, data_dto: PWebDataDTO, is_validate=True, is_populate_model=False, load_only=False, form_data=None, before_validate=None, after_validate=None, ignore_load_model_field: list = None):
         if not form_data:
             form_data = self.request_data.form_and_file_data()
 
@@ -77,7 +85,7 @@ class PWebCRUD:
                 after_validate(form_data)
 
             if is_populate_model:
-                return self.load_model_from_dict(data, data_dto)
+                return self.load_model_from_dict(data, data_dto, ignore_load=ignore_load_model_field)
 
         if load_only:
             return self.load_allowed_data_from_dict(form_data, data_dto)

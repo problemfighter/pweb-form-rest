@@ -17,8 +17,8 @@ class PWebCRUDCommon:
     def validate_data(self, data: dict, data_dto: PWebDataDTO):
         return self.pweb_crud.validate_data(data=data, data_dto=data_dto)
 
-    def load_model_from_dict(self, data: dict, data_dto: PWebDataDTO, instance=None):
-        return self.pweb_crud.load_model_from_dict(data=data, data_dto=data_dto, instance=instance)
+    def load_model_from_dict(self, data: dict, data_dto: PWebDataDTO, instance=None, ignore_load: list = None):
+        return self.pweb_crud.load_model_from_dict(data=data, data_dto=data_dto, instance=instance, ignore_load=ignore_load)
 
     def load_rest_model_from_dict(self, data: dict, data_dto: PWebDataDTO, instance=None):
         return self.pweb_crud.populate_model(data=data, data_dto=data_dto, instance=instance)
@@ -49,14 +49,14 @@ class PWebCRUDCommon:
             after_save(data=data, model=model)
         return model
 
-    def save(self, data: dict, request_dto: PWebDataDTO, existing_model=None, before_save=None, after_save=None):
-        model = self.pweb_crud.populate_model(data, request_dto, instance=existing_model)
+    def save(self, data: dict, request_dto: PWebDataDTO, existing_model=None, before_save=None, after_save=None, ignore_load: list = None):
+        model = self.pweb_crud.populate_model(data, request_dto, instance=existing_model, ignore_load=ignore_load)
         return self.perform_save(model=model, data=data, before_save=before_save, after_save=after_save)
 
-    def edit(self, model_id, data: dict, request_dto: PWebDataDTO, existing_model=None, query=None, before_save=None, after_save=None):
+    def edit(self, model_id, data: dict, request_dto: PWebDataDTO, existing_model=None, query=None, before_save=None, after_save=None, ignore_load: list = None):
         if not existing_model:
             existing_model = self.get_by_id(model_id, query=query, exception=True)
-        return self.save(data=data, request_dto=request_dto, existing_model=existing_model, before_save=before_save, after_save=after_save)
+        return self.save(data=data, request_dto=request_dto, existing_model=existing_model, before_save=before_save, after_save=after_save, ignore_load=ignore_load)
 
     def soft_remove(self, model_id: int, query=None, exception=True, before_delete=None, after_delete=None):
         existing_model = self.get_by_id(model_id, exception=exception, query=query)
