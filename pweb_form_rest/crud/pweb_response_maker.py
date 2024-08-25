@@ -4,7 +4,7 @@ from flask import make_response, send_file
 from pweb_form_rest.data.pweb_response_data import PWebMessageResponse, PWebDataResponse, PWebPagination, \
     PWebPaginateResponse
 from pweb_form_rest.data.pweb_response_status import PWebResponseCode, PWebResponseStatus
-from pweb_form_rest.schema.pweb_rest_schema import PWebDataDTO
+from pweb_form_rest.schema.pweb_rest_schema import PWebDataDTO, APIPaginateResponse
 from pweb_orm import PWebBaseModel
 
 
@@ -90,6 +90,12 @@ class ResponseMaker:
         response.status = PWebResponseStatus.success
         response.code = PWebResponseCode.success
         response.pagination = pagination
+        return response
+
+    def get_paginate_dict(self, model: PWebBaseModel, data: list):
+        pagination = self.set_pagination_data(model=model)
+        response = APIPaginateResponse().dump({"pagination": pagination})
+        response["data"] = data
         return response
 
     def paginate_type_response(self, model: PWebBaseModel, response_dto: PWebDataDTO):
