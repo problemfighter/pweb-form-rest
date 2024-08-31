@@ -41,6 +41,9 @@ class PWebCRUDCommon:
     def read_all(self, query=None, search_fields: list = None, sort_field=None, sort_order=None, item_per_page=None, enable_pagination=True, enable_sort: bool = True):
         return self.pweb_crud.list(model=self.model, query=query, search_fields=search_fields, sort_field=sort_field, sort_order=sort_order, item_per_page=item_per_page, enable_pagination=enable_pagination, enable_sort=enable_sort)
 
+    def bulk_update(self, query, name_values: dict):
+        self.pweb_crud.update_all(query=query, name_values=name_values)
+
     def perform_save(self, model, data: dict, before_save=None, after_save=None):
         if before_save and callable(before_save):
             before_save(data=data, model=model)
