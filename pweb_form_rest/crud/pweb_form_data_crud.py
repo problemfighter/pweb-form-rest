@@ -2,7 +2,6 @@ from copy import copy
 from flask import flash, redirect
 from marshmallow import ValidationError
 from werkzeug.datastructures import FileStorage
-from pweb_auth.common.pweb_auth_config import PWebAuthConfig
 from pweb_form_rest import FileDataCRUD
 from pweb_form_rest.common.pweb_fr_exception import FormRESTException
 from pweb_form_rest.crud.pweb_crud_common import PWebCRUDCommon
@@ -49,7 +48,7 @@ class FormDataCRUD(PWebCRUDCommon):
                 self.pweb_form_data.handle_validation_exception(exception=exception, definition=form.definition)
             elif isinstance(exception, FormRESTException):
                 self.pweb_form_data.handle_form_rest_exception(exception=exception, definition=form.definition)
-        message = PWebAuthConfig.CHECK_VALIDATION_ERROR_SM
+        message = "Please check the validation error"
         if exception and hasattr(exception, "message"):
             message = exception.message
         flash(message, "error")

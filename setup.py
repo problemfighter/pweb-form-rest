@@ -23,7 +23,7 @@ def get_dependencies():
 
 setup(
     name='pweb-form-rest',
-    version='0.0.10',
+    version='0.0.11',
     url='https://github.com/banglafighter/pweb-form-rest',
     license='Apache 2.0',
     author='Bangla Fighter',
