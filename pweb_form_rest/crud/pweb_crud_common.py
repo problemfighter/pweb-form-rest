@@ -81,6 +81,15 @@ class PWebCRUDCommon:
         existing_model = self.get_by_id(model_id, exception=True, query=query)
         existing_model.delete()
 
+    def remove_all_by_ids(self, ids: list, query=None):
+        self.pweb_crud.delete_by_ids_in(model=self.model, ids=ids, query=query)
+
+    def remove_all_not_in_ids(self, ids: list, query=None):
+        self.pweb_crud.delete_by_ids_not_in(model=self.model, ids=ids, query=query)
+
+    def remove_all(self, query=None):
+        self.pweb_crud.delete_all(model=self.model, query=query)
+
     def save_all(self, model_list: list):
         self.model.save_all(model_list)
 
